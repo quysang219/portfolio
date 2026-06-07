@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Quy Sang — Security Engineering &amp; Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #131722;
+    --ink-soft: #3c4356;
+    --ink-muted: #7a8194;
+    --ink-faint: #b2b7c4;
+    --paper: #f3f4f7;
+    --paper-card: #fbfbfd;
+    --rule: #d3d6df;
+    --rule-soft: #e1e3ea;
+
+    --accent: #2f4b7c;
+    --accent-soft: #c8d2e2;
+    --accent-bg: #e3e9f2;
+    --accent-deep: #16243d;
+
+    --bronze: #8a6a2e;
+    --bronze-soft: #e0d3a8;
+    --bronze-bg: #f3ecd9;
+
+    --teal: #1d6a5b;
+    --teal-soft: #b8d4cc;
+    --teal-bg: #dde9e4;
+    --teal-deep: #0a3d35;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse at top right, rgba(47, 75, 124, 0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at bottom left, rgba(29, 106, 91, 0.04) 0%, transparent 55%);
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 44px 56px 60px;
+  }
+
+  /* ============== HEADER ============== */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 18px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .brand .role {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    text-align: right;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .meta a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent-soft); }
+  .meta a:hover { color: var(--accent-deep); border-bottom-color: var(--accent); }
+
+  /* ============== HEADER PORTRAIT (top-right) ============== */
+  .header { gap: 26px; align-items: center; }
+  .header .meta { flex: 1; }
+  .portrait {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 2px dashed var(--accent-soft);
+    background: linear-gradient(135deg, #f3f4f7 0%, #e9ebf0 100%);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(20, 30, 50, 0.05);
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+  }
+  .portrait .ph-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    line-height: 1.45;
+    padding: 6px;
+  }
+  .portrait .ph-fallback .ph-name {
+    color: var(--accent);
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+
+  /* ============== TABS (pill) ============== */
+  .tabs-wrap { display: flex; justify-content: flex-start; margin-bottom: 48px; }
+  .tabs {
+    display: inline-flex;
+    gap: 2px;
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(20, 30, 50, 0.04);
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 9px 20px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+  }
+  .tab:hover { color: var(--ink-soft); }
+  .tab.active { background: var(--accent); color: #ffffff; }
+  .tab .tab-num { color: var(--ink-faint); margin-right: 8px; font-weight: 400; }
+  .tab.active .tab-num { color: rgba(255, 255, 255, 0.55); }
+
+  .tab-panel { display: none; animation: fadeUp 0.5s ease-out; }
+  .tab-panel.active { display: block; }
+
+  /* ============== HERO (shared) ============== */
+  .hero { margin-bottom: 44px; }
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    max-width: 860px;
+    margin-bottom: 16px;
+  }
+  h1.title em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144;
+    color: var(--accent);
+  }
+  .deck {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 720px;
+  }
+
+  /* ============== KPI strip ============== */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    margin-bottom: 64px;
+    overflow: hidden;
+  }
+  .kpi-strip .k {
+    background: var(--paper-card);
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .kpi-strip .k .k-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-muted);
+  }
+  .kpi-strip .k .k-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 14px;
+  }
+  .kpi-strip .k .k-val {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .kpi-strip .k .k-val em { font-style: italic; color: var(--accent); }
+  .kpi-strip .k .k-note {
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+  .kpi-strip .k .k-spark svg { display: block; }
+
+  /* ============== Section heading ============== */
+  .sect { margin-bottom: 60px; }
+  .sect-h {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .sect-h .h-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+  .sect-h h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .sect-h h2 em { font-style: italic; color: var(--accent); }
+  .sect-h .h-rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--accent-soft), transparent);
+    max-width: 280px;
+  }
+  .sect-lede {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin-bottom: 30px;
+  }
+
+  /* ============== Exhibit ============== */
+  .exhibit {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+  .exhibit-side {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .exhibit-center {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .exhibit-image {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(20, 30, 50, 0.08);
+  }
+  .exhibit-image img { width: 100%; display: block; }
+  .exhibit-image.placeholder {
+    background: linear-gradient(135deg, #f3f4f7 0%, #e9ebf0 100%);
+    border: 2px dashed var(--accent-soft);
+    aspect-ratio: 16 / 8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 32px;
+    color: var(--ink-muted);
+    box-shadow: none;
+  }
+  .exhibit-image .ph-label {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .exhibit-image .ph-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 4px;
+  }
+  .exhibit-image .ph-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--accent);
+    margin-top: 8px;
+    padding: 4px 10px;
+    background: var(--paper-card);
+    border: 1px solid var(--accent-soft);
+    border-radius: 3px;
+  }
+  .exhibit-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .exhibit-caption .cap-em { color: var(--accent); font-weight: 500; }
+
+  /* ============== Callout (flag header pattern) ============== */
+  .callout {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 0;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(20, 30, 50, 0.03);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+  }
+  .callout:hover {
+    box-shadow: 0 4px 14px rgba(20, 30, 50, 0.07);
+    transform: translateY(-1px);
+  }
+  .callout.cat-program    { border-left: 2px solid var(--teal); }
+  .callout.cat-capability { border-left: 2px solid var(--bronze); }
+
+  .co-flag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px 9px;
+    border-bottom: 1px solid var(--rule-soft);
+    background: linear-gradient(180deg, #f9fafc 0%, var(--paper-card) 100%);
+  }
+  .co-flag .co-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+  }
+  .co-flag .co-flag-r {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .co-flag .co-flag-val {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.005em;
+  }
+  .co-flag .co-flag-val.muted {
+    color: var(--ink-faint);
+    font-size: 18px;
+    line-height: 0.8;
+  }
+  .co-flag .co-flag-glyph {
+    display: block;
+    flex-shrink: 0;
+  }
+  .co-flag .co-flag-glyph svg { display: block; }
+
+  .co-body {
+    padding: 11px 14px 14px;
+  }
+  .callout .co-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  .callout .co-desc {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* directional arrow */
+  .callout .co-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    opacity: 0.55;
+    line-height: 1;
+  }
+  .exhibit-left  .callout .co-arrow { right: -14px; }
+  .exhibit-right .callout .co-arrow { left:  -14px; }
+
+  /* ============== Thin tab-switch link ============== */
+  .tab-link-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+    margin-bottom: 8px;
+  }
+  .tab-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--accent-soft);
+    padding: 0 2px 3px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .tab-link:hover {
+    color: var(--accent-deep);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ============== TAB 2 ============== */
+  .layers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .layer { background: var(--paper-card); padding: 18px 18px 20px; }
+  .layer .l-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+  .layer .l-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .layer .l-desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .layer-flow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    text-align: center;
+    letter-spacing: 0.12em;
+    margin-bottom: 40px;
+  }
+  .layer-flow .arrow { color: var(--accent); margin: 0 6px; }
+
+  .prose {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin-bottom: 40px;
+  }
+  .prose p { margin-bottom: 14px; }
+  .prose em { font-style: italic; color: var(--accent); }
+  .prose strong { color: var(--ink); font-weight: 500; }
+
+  .example {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--bronze);
+    border-radius: 0 4px 4px 0;
+    padding: 22px 24px 24px;
+    margin-bottom: 40px;
+  }
+  .example .ex-h {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--bronze);
+    margin-bottom: 8px;
+  }
+  .example h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 19px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.25;
+  }
+  .example h3 em { font-style: italic; color: var(--accent); }
+  .example p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .example p:last-child { margin-bottom: 0; }
+  .example code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  .principles { list-style: none; margin-bottom: 40px; }
+  .principles li {
+    padding: 14px 0;
+    border-top: 1px dashed var(--rule-soft);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .principles li:first-child { border-top: 1px solid var(--rule); }
+  .principles li strong {
+    display: block;
+    color: var(--ink);
+    font-weight: 500;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .principles li em { font-style: italic; color: var(--accent); }
+
+  .bg-side {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 22px 22px 24px;
+    margin-bottom: 36px;
+  }
+  .bg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .bg-side .bs-h {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .bg-side .bs-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 5px 0;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .bg-side .bs-row .k { color: var(--ink); font-weight: 500; }
+  .bg-side .bs-row .v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .bg-side .cert-pending { color: var(--bronze); font-style: italic; }
+
+  /* ============== Story · Timeline (interactive arc) ============== */
+  .timeline {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 0 8px;
+    margin-bottom: 26px;
+  }
+  .tl-line {
+    position: absolute;
+    top: 21px;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--bronze-soft) 0%,
+      var(--bronze-soft) 22%,
+      var(--teal-soft)   28%,
+      var(--teal-soft)   47%,
+      var(--bronze-soft) 53%,
+      var(--bronze-soft) 72%,
+      var(--teal-soft)   78%,
+      var(--teal-soft)   100%
+    );
+    z-index: 0;
+  }
+  .tl-node {
+    position: relative;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    padding: 0;
+    flex: 1;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  .tl-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--bronze-soft);
+    box-shadow: 0 0 0 5px var(--paper);
+    transition: all 0.2s ease;
+  }
+  .tl-node[data-kind="solution"] .tl-dot { border-color: var(--teal-soft); }
+  .tl-node:hover .tl-dot { transform: scale(1.18); }
+  .tl-node.active .tl-dot {
+    background: var(--bronze);
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 5px var(--paper), 0 0 0 9px var(--bronze-bg);
+  }
+  .tl-node[data-kind="solution"].active .tl-dot {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 0 0 5px var(--paper), 0 0 0 9px var(--teal-bg);
+  }
+  .tl-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+  .tl-node.active .tl-meta { color: var(--accent); }
+  .tl-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.25;
+    max-width: 150px;
+    transition: color 0.15s ease;
+  }
+  .tl-node.active .tl-name { color: var(--ink); }
+  .tl-node:hover .tl-name { color: var(--ink); }
+
+  .tl-panel {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 24px 28px 26px;
+    animation: fadeUp 0.32s ease-out;
+  }
+  .tl-panel.hidden { display: none; }
+  .tl-panel.kind-problem  { border-left: 3px solid var(--bronze); }
+  .tl-panel.kind-solution { border-left: 3px solid var(--teal); }
+  .tl-panel .tlp-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+  .tl-panel.kind-problem  .tlp-tag { color: var(--bronze); }
+  .tl-panel.kind-solution .tlp-tag { color: var(--teal); }
+  .tl-panel h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+    margin-bottom: 14px;
+    line-height: 1.22;
+  }
+  .tl-panel h3 em { font-style: italic; color: var(--accent); }
+  .tl-panel p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    max-width: 760px;
+  }
+  .tl-panel p:last-child { margin-bottom: 0; }
+  .tl-panel p em { font-style: italic; color: var(--accent); }
+  .tl-panel p strong { color: var(--ink); font-weight: 500; }
+  .tl-panel .tlp-aside {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 14px;
+    margin-bottom: 0;
+  }
+  .tl-panel .loop-flow {
+    margin: 14px 0 14px;
+  }
+  .tl-panel .problem-grid {
+    margin: 16px 0 14px;
+  }
+
+  /* ============== Story · Act header ============== */
+  .act-h {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .act-h .a-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--bronze);
+  }
+  .act-h h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .act-h h2 em { font-style: italic; color: var(--accent); }
+  .act-h .h-rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--bronze-soft), transparent);
+    max-width: 280px;
+  }
+
+  /* ============== Story · Problem grid (3-up) ============== */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--bronze);
+    border-radius: 0 4px 4px 0;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .problem-grid .pcell {
+    background: var(--paper-card);
+    padding: 18px 18px 20px;
+  }
+  .problem-grid .p-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--bronze);
+    margin-bottom: 8px;
+  }
+  .problem-grid .p-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .problem-grid .p-desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ============== Story · Loop diagram (Act I) ============== */
+  .loop-flow {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--bronze);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 22px 20px;
+    margin-bottom: 22px;
+  }
+  .loop-flow .lf-h {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--bronze);
+    margin-bottom: 12px;
+  }
+  .loop-flow .lf-chain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+  }
+  .loop-flow .lf-chain .arr { color: var(--accent); margin: 0 6px; }
+  .loop-flow .lf-chain .wait { color: var(--bronze); font-style: italic; }
+
+  /* ============== Story · Results strip ============== */
+  .results-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .results-strip .r {
+    background: var(--paper-card);
+    padding: 18px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .results-strip .r .r-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-muted);
+  }
+  .results-strip .r .r-val {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .results-strip .r .r-val em { font-style: italic; color: var(--accent); }
+  .results-strip .r .r-val .arr { color: var(--accent); font-style: normal; margin: 0 4px; }
+  .results-strip .r .r-note {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+
+  /* ============== Story · Inline tab anchor ============== */
+  .seetab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-soft);
+    padding: 2px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .seetab:hover {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  /* ============== Footer ============== */
+  .footer {
+    margin-top: 40px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+  }
+  .footer .stamp strong { color: var(--ink); font-weight: 500; }
+  .footer a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent-soft); }
+  .footer a:hover { color: var(--accent-deep); border-bottom-color: var(--accent); }
+
+  /* ============== Animations ============== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============== Responsive ============== */
+  @media (max-width: 1100px) {
+    .page { padding: 28px 24px 40px; }
+    h1.title { font-size: 32px; }
+    .kpi-strip { grid-template-columns: 1fr; }
+    .exhibit { grid-template-columns: 1fr; gap: 16px; }
+    .exhibit-left  .callout .co-arrow,
+    .exhibit-right .callout .co-arrow { display: none; }
+    .layers { grid-template-columns: 1fr 1fr; }
+    .bg-grid { grid-template-columns: 1fr; gap: 20px; }
+    .footer { flex-direction: column; align-items: flex-start; }
+    .header { flex-direction: column; gap: 14px; align-items: flex-start; }
+    .meta { text-align: left; }
+    .tab-link-wrap { justify-content: flex-start; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .results-strip { grid-template-columns: 1fr 1fr; }
+    .portrait { width: 74px; height: 74px; }
+    .tl-name { font-size: 12px; max-width: 90px; }
+    .tl-meta { font-size: 8.5px; letter-spacing: 0.16em; }
+    .tl-line { left: 14%; right: 14%; }
+    .tl-panel { padding: 18px 18px 20px; }
+  }
+  @media print { body { background-image: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============== HEADER ============== -->
+  <div class="header">
+    <div class="brand">
+      Le Quy Sang
+      <span class="role">Security Engineering · Automation</span>
+    </div>
+    <div class="meta">
+      Hanoi, Vietnam<br>
+      <a href="mailto:quysang219@gmail.com">quysang219@gmail.com</a><br>
+      <a href="https://linkedin.com/in/quy-sang-le-30bb21117">linkedin / quy-sang-le</a>
+    </div>
+    <div class="portrait" aria-label="Portrait">
+      <img src="img/portrait.jpg"
+           alt="Le Quy Sang"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="ph-fallback" style="display:none;">
+        <span class="ph-name">portrait</span>
+        <span>img/<br>portrait.jpg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== TAB NAV ============== -->
+  <div class="tabs-wrap">
+    <nav class="tabs">
+      <button class="tab active" data-tab="recruiter">
+        <span class="tab-num">01</span>The Deliverables
+      </button>
+      <button class="tab" data-tab="manager">
+        <span class="tab-num">02</span>The Story
+      </button>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       TAB 1 — THE DELIVERABLES
+       ============================================================ -->
+  <div id="recruiter" class="tab-panel active">
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1 class="title">Security operations, shipped as <em>data infrastructure</em>.</h1>
+      <p class="deck">
+        Four years engineering the productized security stack behind ~30,000
+        production assets — Power BI for the executive view, an internal
+        self-service platform for asset owners, Postgres pipelines and
+        Claude Code in between.
+      </p>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="k">
+        <div class="k-lbl">Assets in scope</div>
+        <div class="k-top">
+          <div class="k-val">~30,000</div>
+          <div class="k-spark" aria-hidden="true">
+            <svg width="48" height="32" viewBox="0 0 48 32">
+              <rect x="2"  y="2"  width="20" height="13" fill="#c8d2e2" stroke="#2f4b7c" stroke-width="0.8" rx="1"/>
+              <rect x="26" y="2"  width="20" height="13" fill="#c8d2e2" stroke="#2f4b7c" stroke-width="0.8" rx="1"/>
+              <rect x="2"  y="17" width="20" height="13" fill="#c8d2e2" stroke="#2f4b7c" stroke-width="0.8" rx="1"/>
+              <rect x="26" y="17" width="20" height="13" fill="#c8d2e2" stroke="#2f4b7c" stroke-width="0.8" rx="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="k-note">cloud · on-prem · network · endpoint</div>
+      </div>
+
+      <div class="k">
+        <div class="k-lbl">Compliance lift</div>
+        <div class="k-top">
+          <div class="k-val">60 <em>→</em> 90%+</div>
+          <div class="k-spark" aria-hidden="true">
+            <svg width="78" height="32" viewBox="0 0 78 32">
+              <rect x="2"  y="22" width="9" height="8"  fill="#c8d2e2" rx="1"/>
+              <rect x="14" y="18" width="9" height="12" fill="#c8d2e2" rx="1"/>
+              <rect x="26" y="14" width="9" height="16" fill="#b8d4cc" rx="1"/>
+              <rect x="38" y="10" width="9" height="20" fill="#b8d4cc" rx="1"/>
+              <rect x="50" y="6"  width="9" height="24" fill="#1d6a5b" rx="1"/>
+              <rect x="62" y="3"  width="9" height="27" fill="#1d6a5b" rx="1"/>
+              <path d="M6,23 L18,19 L30,15 L42,11 L54,7 L66,4"
+                    fill="none" stroke="#2f4b7c" stroke-width="1.2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="66" cy="4" r="1.6" fill="#2f4b7c"/>
+            </svg>
+          </div>
+        </div>
+        <div class="k-note">agent &amp; vuln program coverage</div>
+      </div>
+
+      <div class="k">
+        <div class="k-lbl">Security engineering</div>
+        <div class="k-top">
+          <div class="k-val">4 years</div>
+          <div class="k-spark" aria-hidden="true">
+            <svg width="78" height="32" viewBox="0 0 78 32">
+              <line x1="4" y1="16" x2="74" y2="16" stroke="#c8d2e2" stroke-width="1.2"/>
+              <circle cx="6"  cy="16" r="3" fill="#c8d2e2" stroke="#2f4b7c" stroke-width="0.8"/>
+              <circle cx="29" cy="16" r="3" fill="#b8d4cc" stroke="#2f4b7c" stroke-width="0.8"/>
+              <circle cx="52" cy="16" r="3" fill="#1d6a5b" stroke="#0a3d35" stroke-width="0.8"/>
+              <circle cx="72" cy="16" r="4" fill="#2f4b7c" stroke="#16243d" stroke-width="0.8"/>
+              <text x="6"  y="29" font-family="monospace" font-size="6" fill="#7a8194" text-anchor="middle">22</text>
+              <text x="72" y="29" font-family="monospace" font-size="6" fill="#16243d" text-anchor="middle">26</text>
+            </svg>
+          </div>
+        </div>
+        <div class="k-note">VPBank IT Security · 2022 →</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         EXHIBIT 1 — Self-Service Security Platform
+         ============================================================ -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Exhibit · 01</span>
+        <h2>Self-Service <em>Security Platform</em>.</h2>
+        <span class="h-rule"></span>
+      </div>
+      <p class="sect-lede">
+        The operator surface — where asset owners review their scope, run
+        the compliance programs against their own systems, and act
+        without waiting in a ticket queue.
+      </p>
+
+      <div class="exhibit">
+
+        <!-- LEFT — 3 callouts -->
+        <div class="exhibit-side exhibit-left">
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Program · 01</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <rect x="2"  y="16" width="3" height="6"  fill="#1d6a5b" rx="0.5"/>
+                    <rect x="7"  y="12" width="3" height="10" fill="#1d6a5b" rx="0.5"/>
+                    <rect x="12" y="8"  width="3" height="14" fill="#1d6a5b" rx="0.5"/>
+                    <rect x="17" y="3"  width="3" height="19" fill="#1d6a5b" rx="0.5"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val">60 → 90%+</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Vulnerability Management</div>
+              <div class="co-desc">
+                Scan coverage and remediation tracked per asset; owners see
+                their gaps in the same surface they already open.
+              </div>
+            </div>
+            <span class="co-arrow">→</span>
+          </div>
+
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Program · 02</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="#c8d2e2" stroke-width="3"/>
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="#1d6a5b" stroke-width="3"
+                            stroke-dasharray="48 57" transform="rotate(-90 12 12)"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Security Agent Coverage</div>
+              <div class="co-desc">
+                Install state and retention drops as snapshot history,
+                feeding the exception lifecycle when assets fall behind.
+              </div>
+            </div>
+            <span class="co-arrow">→</span>
+          </div>
+
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Program · 03</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <rect x="2"  y="2"  width="9" height="9" fill="#1d6a5b" rx="1"/>
+                    <rect x="13" y="2"  width="9" height="9" fill="#c8d2e2" rx="1"/>
+                    <rect x="2"  y="13" width="9" height="9" fill="#c8d2e2" rx="1"/>
+                    <rect x="13" y="13" width="9" height="9" fill="#1d6a5b" rx="1"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">PCI DSS Hardening</div>
+              <div class="co-desc">
+                Configuration-hardening evidence captured continuously
+                instead of pulled by hand at audit time — owner-attested.
+              </div>
+            </div>
+            <span class="co-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- CENTER — operator screenshot -->
+        <div class="exhibit-center">
+          <figure class="exhibit-image">
+            <img src="img/SEC_MGMT.png"
+                 alt="SEC MGMT — Self-Service Security Platform"
+                 onerror="this.parentNode.classList.add('placeholder'); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="placeholder-fallback"
+                 style="display:none; flex-direction:column; align-items:center; padding:32px; text-align:center;">
+              <div class="ph-label">Self-Service Security Platform</div>
+              <div class="ph-sub">[ image not yet on disk ]</div>
+              <div class="ph-path">img/SEC_MGMT.png</div>
+            </div>
+          </figure>
+          <div class="exhibit-caption">
+            <span class="cap-em">Operator surface</span> —
+            scope · exception lifecycle · delegation · audit log
+          </div>
+        </div>
+
+        <!-- RIGHT — 3 callouts -->
+        <div class="exhibit-side exhibit-right">
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Program · 04</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <rect x="3"  y="3"  width="3" height="18" fill="#1d6a5b" rx="0.5"/>
+                    <rect x="10" y="3"  width="3" height="18" fill="#1d6a5b" rx="0.5"/>
+                    <rect x="17" y="3"  width="3" height="18" fill="#1d6a5b" rx="0.5"/>
+                    <line x1="2" y1="9" x2="22" y2="9" stroke="#c8d2e2" stroke-width="1.2"/>
+                    <line x1="2" y1="15" x2="22" y2="15" stroke="#c8d2e2" stroke-width="1.2"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Firewall Review</div>
+              <div class="co-desc">
+                Rule-base reviews surfaced as owner-actionable items,
+                with attestation captured in-platform.
+              </div>
+            </div>
+            <span class="co-arrow">←</span>
+          </div>
+
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Program · 05</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <rect x="2"  y="4"  width="20" height="4" fill="#c8d2e2" rx="2"/>
+                    <rect x="2"  y="10" width="14" height="4" fill="#1d6a5b" rx="2"/>
+                    <rect x="2"  y="16" width="20" height="4" fill="#c8d2e2" rx="2"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">User Account Reviews</div>
+              <div class="co-desc">
+                Periodic account-recertification cycles routed to the
+                right approvers, closed-loop and time-bounded.
+              </div>
+            </div>
+            <span class="co-arrow">←</span>
+          </div>
+
+          <div class="callout cat-capability">
+            <div class="co-flag">
+              <span class="co-tag">Capability · 01</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <circle cx="9"  cy="12" r="6" fill="none" stroke="#8a6a2e" stroke-width="1.5"/>
+                    <circle cx="15" cy="12" r="6" fill="none" stroke="#8a6a2e" stroke-width="1.5"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Access &amp; Ownership Grants</div>
+              <div class="co-desc">
+                The substrate underneath — append-only ownership graph
+                with bidirectional grant / revoke and admin-on-behalf.
+              </div>
+            </div>
+            <span class="co-arrow">←</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================
+         EXHIBIT 2 — Centralized Security Reporting
+         ============================================================ -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Exhibit · 02</span>
+        <h2>Centralized <em>Security Reporting</em>.</h2>
+        <span class="h-rule"></span>
+      </div>
+      <p class="sect-lede">
+        The executive surface — a Power BI front consolidating asset
+        compliance, hardening and vulnerability state into one view for
+        leadership, team reviews and audit prep.
+      </p>
+
+      <div class="exhibit">
+
+        <!-- LEFT — 2 callouts -->
+        <div class="exhibit-side exhibit-left">
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Report · 01</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <line x1="2" y1="6" x2="22" y2="6" stroke="#c8d2e2" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                    <path d="M2 18 L7 14 L12 12 L17 9 L22 7" fill="none" stroke="#1d6a5b" stroke-width="1.5"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="22" cy="7" r="1.5" fill="#1d6a5b"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val">95% target</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Progress Tracking</div>
+              <div class="co-desc">
+                Security metrics maintained toward 95% target compliance
+                across asset domains, with trend and gap visibility per owner.
+              </div>
+            </div>
+            <span class="co-arrow">→</span>
+          </div>
+
+          <div class="callout cat-capability">
+            <div class="co-flag">
+              <span class="co-tag">Capability · 02</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M2 12 L7 12 L9 8 L11 16 L13 6 L15 14 L17 12 L22 12"
+                          fill="none" stroke="#8a6a2e" stroke-width="1.5"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Anomalies Detection</div>
+              <div class="co-desc">
+                Snapshot-based passes surface directory quirks, coverage
+                drift and silent-failure patterns the dashboards alone miss.
+              </div>
+            </div>
+            <span class="co-arrow">→</span>
+          </div>
+        </div>
+
+        <!-- CENTER — PBI screenshot -->
+        <div class="exhibit-center">
+          <figure class="exhibit-image">
+            <img src="img/SEC_MGMT_Measurement_Report.png"
+                 alt="SEC MGMT Measurement Report — Centralized Security Reporting"
+                 onerror="this.parentNode.classList.add('placeholder'); this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="placeholder-fallback"
+                 style="display:none; flex-direction:column; align-items:center; padding:32px; text-align:center;">
+              <div class="ph-label">Centralized Security Reporting</div>
+              <div class="ph-sub">[ image not yet on disk ]</div>
+              <div class="ph-path">img/SEC_MGMT_Measurement_Report.png</div>
+            </div>
+          </figure>
+          <div class="exhibit-caption">
+            <span class="cap-em">Executive surface</span> —
+            asset compliance · hardening · vulnerability state · trend
+          </div>
+        </div>
+
+        <!-- RIGHT — 2 callouts -->
+        <div class="exhibit-side exhibit-right">
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Report · 02</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" fill="#1d6a5b"/>
+                    <line x1="12" y1="2"  x2="12" y2="6"  stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="12" y1="18" x2="12" y2="22" stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="2"  y1="12" x2="6"  y2="12" stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="18" y1="12" x2="22" y2="12" stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="4.5"  y1="4.5"  x2="7.5"  y2="7.5"  stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="16.5" y1="16.5" x2="19.5" y2="19.5" stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="4.5"  y1="19.5" x2="7.5"  y2="16.5" stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="16.5" y1="7.5"  x2="19.5" y2="4.5"  stroke="#1d6a5b" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Achievement Recognition</div>
+              <div class="co-desc">
+                Top-performing teams surfaced from the same data
+                leadership uses for review — recognition becomes routine,
+                not anecdotal.
+              </div>
+            </div>
+            <span class="co-arrow">←</span>
+          </div>
+
+          <div class="callout cat-program">
+            <div class="co-flag">
+              <span class="co-tag">Report · 03</span>
+              <span class="co-flag-r">
+                <span class="co-flag-glyph" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24">
+                    <line x1="3" y1="20" x2="21" y2="20" stroke="#c8d2e2" stroke-width="1.5"/>
+                    <path d="M12 17 L12 5 M8 9 L12 5 L16 9" fill="none" stroke="#1d6a5b" stroke-width="1.8"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="co-flag-val muted">—</span>
+              </span>
+            </div>
+            <div class="co-body">
+              <div class="co-name">Executive Reporting</div>
+              <div class="co-desc">
+                Same data model, summarised for security managers — one
+                source of truth across operator action and leadership read.
+              </div>
+            </div>
+            <span class="co-arrow">←</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Thin tab switch -->
+    <div class="tab-link-wrap">
+      <button class="tab-link" data-tab="manager">Continue to The Story →</button>
+    </div>
+
+  </div>
+  <!-- end #recruiter -->
+
+  <!-- ============================================================
+       TAB 2 — THE STORY
+       ============================================================ -->
+  <div id="manager" class="tab-panel">
+
+    <div class="hero">
+      <h1 class="title">Compliance is a <em>product surface</em>, not a binder.</h1>
+      <p class="deck">
+        The journey behind the platforms — two problems and two solutions
+        across four years, and how a governance role turned into a
+        security-engineering practice.
+      </p>
+    </div>
+
+    <!-- ============= THE ARC — interactive timeline ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">The arc</span>
+        <h2>Two <em>problems</em>, two <em>solutions</em>.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <p class="sect-lede">
+        Click a stage to read it. Each problem made the next solution
+        obvious; each solution made the next problem visible.
+      </p>
+
+      <div class="timeline">
+        <div class="tl-line"></div>
+        <button class="tl-node active" data-stage="1" data-kind="problem">
+          <span class="tl-dot"></span>
+          <span class="tl-meta">01 · Problem</span>
+          <span class="tl-name">Excel + inboxes</span>
+        </button>
+        <button class="tl-node" data-stage="2" data-kind="solution">
+          <span class="tl-dot"></span>
+          <span class="tl-meta">02 · Solution</span>
+          <span class="tl-name">Pipeline + dashboard</span>
+        </button>
+        <button class="tl-node" data-stage="3" data-kind="problem">
+          <span class="tl-dot"></span>
+          <span class="tl-meta">03 · Problem</span>
+          <span class="tl-name">Visibility ≠ action</span>
+        </button>
+        <button class="tl-node" data-stage="4" data-kind="solution">
+          <span class="tl-dot"></span>
+          <span class="tl-meta">04 · Solution</span>
+          <span class="tl-name">Operator surface</span>
+        </button>
+      </div>
+
+      <!-- Stage 1 -->
+      <div class="tl-panel kind-problem" id="tl-stage-1">
+        <div class="tlp-tag">Stage 01 · The problem</div>
+        <h3>Security work that lived in <em>Excel</em>.</h3>
+        <p>
+          I joined VPBank's IT Security team in 2022 as a Governance
+          Officer expecting policy work. The bottleneck wasn't policy —
+          the program had policies. It needed <em>infrastructure</em>: a
+          place for ownership to live, a way for evidence to survive a
+          quarter, a surface where the asset owner could act without
+          paging anyone.
+        </p>
+        <p>
+          My day-to-day was vulnerability management. Every cycle was
+          hand-offs with no system in the middle holding state:
+        </p>
+        <div class="loop-flow">
+          <div class="lf-h">The original loop</div>
+          <div class="lf-chain">
+            Scan <span class="arr">→</span>
+            export <span class="arr">→</span>
+            split per owner <span class="arr">→</span>
+            password-wrap <span class="arr">→</span>
+            email <span class="arr">→</span>
+            <span class="wait">wait</span> <span class="arr">→</span>
+            re-scan <span class="arr">→</span>
+            verify by eye
+          </div>
+        </div>
+        <p>
+          The numbers in the monthly report were never the numbers the
+          scanner saw that morning. The owners didn't know what was theirs
+          until the email arrived. The security team spent more time
+          ferrying findings around than thinking about them.
+        </p>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="tl-panel kind-solution hidden" id="tl-stage-2">
+        <div class="tlp-tag">Stage 02 · The solution</div>
+        <h3>A pipeline, and a dashboard the team <em>actually opened</em>.</h3>
+        <p>
+          A data pipeline ingesting scan results directly, joined to the
+          asset inventory, landed in Postgres as snapshot history. A Power
+          BI report on top — each owner saw a view filtered to their own
+          scope: what's vulnerable, what's overdue, what's closed, what
+          the trend looks like.
+        </p>
+        <p>
+          The hand-offs collapsed. No more password-wrapped files in
+          inboxes — the owner opened a link and saw the live state. The
+          monthly report stopped being a manual tally; it was a refresh of
+          the same model the operators were already using.
+        </p>
+        <p>
+          <strong>The shift, in one line:</strong> we stopped being the
+          messenger between the scanner and the owner. The dashboard was
+          the messenger. We became the people who designed what it said.
+        </p>
+        <p class="tlp-aside">
+          This is the <em>Centralized Security Reporting</em> exhibit in
+          <button class="seetab" data-tab="recruiter">The Deliverables ↗</button>
+        </p>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="tl-panel kind-problem hidden" id="tl-stage-3">
+        <div class="tlp-tag">Stage 03 · The next problem</div>
+        <h3><em>Visibility</em> isn't action.</h3>
+        <p>
+          The dashboard told the owner what was wrong. It didn't help the
+          expert close the loop on the work that came back. Three things
+          still lived outside the system, and all three were load-bearing:
+        </p>
+        <div class="problem-grid">
+          <div class="pcell">
+            <div class="p-tag">Bottleneck · 01</div>
+            <div class="p-name">Notes, plans, exceptions — by hand</div>
+            <div class="p-desc">
+              Justified delays, agreed remediation plans, approved
+              exceptions — all captured in separate documents. The
+              dashboard couldn't reflect any of it.
+            </div>
+          </div>
+          <div class="pcell">
+            <div class="p-tag">Bottleneck · 02</div>
+            <div class="p-name">Progress, tracked from memory</div>
+            <div class="p-desc">
+              "Is this team actually moving, quarter over quarter?" was a
+              judgement call from whoever had read the dashboard the
+              longest. No history of <em>state</em>, only the latest snapshot.
+            </div>
+          </div>
+          <div class="pcell">
+            <div class="p-tag">Bottleneck · 03</div>
+            <div class="p-name">Anomalies, quietly suspected</div>
+            <div class="p-desc">
+              Experts noticed that "compliant" sometimes meant "the sensor
+              stopped reporting." The dashboards couldn't tell the
+              difference. The concern lived in people's heads.
+            </div>
+          </div>
+        </div>
+        <p>
+          Each of these was a place where the human had to do the system's
+          job — because the system had no slot to hold it.
+        </p>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="tl-panel kind-solution hidden" id="tl-stage-4">
+        <div class="tlp-tag">Stage 04 · The next solution</div>
+        <h3>An <em>operator</em> surface.</h3>
+        <p>
+          A self-service surface on the same Postgres store. Owners
+          stopped emailing notes; they typed them into the platform
+          against the specific finding. Plans, exceptions, delegations —
+          captured in-platform, routed to the right approver, time-bounded,
+          visible to everyone who needed to see them.
+        </p>
+        <p>
+          Two pieces of leverage for the experts:
+          <strong>history tracking</strong> turned "is this team moving?"
+          into a chart anyone could read; <strong>routed comments with AI
+          assist</strong> handled the high-volume, low-novelty replies, so
+          expert attention went to the cases that actually needed it.
+        </p>
+        <p>
+          The silent-failure problem solved itself once history was there.
+          "Compliant for 90 days running" looked different from "compliant
+          since the agent went quiet 87 days ago." We flagged those,
+          traced several to vendor-side issues, and got them fixed at
+          source.
+        </p>
+        <p class="tlp-aside">
+          This is the <em>Self-Service Security Platform</em> exhibit in
+          <button class="seetab" data-tab="recruiter">The Deliverables ↗</button>
+        </p>
+      </div>
+    </div>
+
+    <!-- ============= WORKED EXAMPLE — zoom-in ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Zoom-in · one small decision</span>
+        <h2>The shape of the table <em>is</em> the audit story.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <div class="example">
+        <div class="ex-h">Why the ownership table is append-only</div>
+        <h3>A choice that paid for itself <em>twelve months later</em>.</h3>
+        <p>
+          When the program needed an ownership graph, the obvious shape was
+          a mutable mapping — <code>(asset → owner)</code>, updated in
+          place. Cleaner queries, smaller storage, the standard pattern.
+        </p>
+        <p>
+          I built it append-only instead: <code>(asset, owner, valid_from,
+          valid_to, action, actor)</code>. Three reasons, only one of which
+          was obvious up front.
+        </p>
+        <p>
+          <strong>One — audit becomes free.</strong> "Who owned SRV-PROD-04
+          on 12 March, and who granted that?" is a single
+          <code>SELECT</code>, not a forensic project across backup tapes.
+          <strong>Two — concurrent grants and revokes are safe.</strong>
+          Inserts are atomic; the lock contention that mutates create
+          disappears. <strong>Three — and this is the unobvious one</strong>
+          — every downstream report that filters by ownership now inherits
+          point-in-time correctness without any extra logic. The dashboard
+          for last quarter shows last-quarter's owners, automatically.
+        </p>
+        <p>
+          The mutable version would have shipped faster. It would also have
+          forced a second system to retrofit history into it twelve months
+          later, after the first auditor asked.
+        </p>
+      </div>
+    </div>
+
+    <!-- ============= SYNTHESIS — operating model (now earned) ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">The model we ended up with</span>
+        <h2>Four <em>layers</em>, one product.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <p class="prose">
+        Looking back, the two solutions stack into one shape — each layer
+        feeding the one above. Nothing was designed up front; the layers
+        emerged because each missing one became, in turn, the next
+        bottleneck.
+      </p>
+
+      <div class="layers">
+        <div class="layer">
+          <div class="l-num">L01</div>
+          <div class="l-name">Snapshot truth</div>
+          <div class="l-desc">
+            Every relevant signal lands in Postgres as an append-only history.
+            What was true on Day N stays true on Day N — forever.
+          </div>
+        </div>
+        <div class="layer">
+          <div class="l-num">L02</div>
+          <div class="l-name">Owner surface</div>
+          <div class="l-desc">
+            The asset owner has one place to see their scope and act on it —
+            request, justify, renew, delegate — without a ticket queue.
+          </div>
+        </div>
+        <div class="layer">
+          <div class="l-num">L03</div>
+          <div class="l-name">Audit trail</div>
+          <div class="l-desc">
+            Every action writes back to the same store the dashboards read.
+            The audit log is a by-product, not a separate system.
+          </div>
+        </div>
+        <div class="layer">
+          <div class="l-num">L04</div>
+          <div class="l-name">Executive read</div>
+          <div class="l-desc">
+            Leadership reports are the last derivation, not the first build.
+            Fix the model below; every report inherits the fix.
+          </div>
+        </div>
+      </div>
+
+      <div class="layer-flow">
+        Snapshot <span class="arrow">→</span> Surface <span class="arrow">→</span> Audit <span class="arrow">→</span> Executive
+      </div>
+
+      <p class="prose">
+        Most security reporting goes the other way — start from the
+        executive slide, work backward to the spreadsheet, and treat the
+        owner as a passive subject. That model produces beautiful PDFs and
+        90-day audit fire drills. This one produces a system the owner
+        actually opens.
+      </p>
+    </div>
+
+    <!-- ============= RESULTS ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Results · directional</span>
+        <h2>What <em>changed</em>.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <p class="sect-lede">
+        Directional rather than line-item — the program is still moving,
+        and the goalposts move with it. Hard numbers are kept inside the
+        bank.
+      </p>
+
+      <div class="results-strip">
+        <div class="r">
+          <div class="r-lbl">Compliance lift</div>
+          <div class="r-val">60% <span class="arr">→</span> 90%+</div>
+          <div class="r-note">Across agent and vuln-program coverage on ~30,000 assets.</div>
+        </div>
+        <div class="r">
+          <div class="r-lbl">Vulnerability cycle</div>
+          <div class="r-val">weeks <span class="arr">→</span> <em>days</em></div>
+          <div class="r-note">Manual ferrying of findings collapsed into a single live surface.</div>
+        </div>
+        <div class="r">
+          <div class="r-lbl">Audit prep</div>
+          <div class="r-val">months <span class="arr">→</span> <em>continuous</em></div>
+          <div class="r-note">Point-in-time queries instead of quarter-end forensics.</div>
+        </div>
+        <div class="r">
+          <div class="r-lbl">Upstream impact</div>
+          <div class="r-val">silent <span class="arr">→</span> <em>flagged</em></div>
+          <div class="r-note">Anomaly passes surfaced vendor-side issues; several were patched at source.</div>
+        </div>
+      </div>
+
+      <p class="prose" style="font-size: 13px;">
+        The line-item numbers — owners on the platform, exception
+        turnarounds, audit findings closed — sit in the bank's internal
+        reporting. The shape of the change is what's portable.
+      </p>
+    </div>
+
+    <!-- ============= PRINCIPLES ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Principles</span>
+        <h2>How I <em>work</em>.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <ul class="principles">
+        <li>
+          <strong>Closed loops, not one-shot reports.</strong>
+          Every metric should be <em>actionable by the owner</em> in the same
+          tool that surfaces it. Otherwise it's a screenshot.
+        </li>
+        <li>
+          <strong>Snapshot the truth, not yesterday's screenshot.</strong>
+          Append-only history is the cheapest auditor in the room — and the
+          only one that scales past the second financial year.
+        </li>
+        <li>
+          <strong>The dashboard is downstream of the data model.</strong>
+          Fix the schema once; every report inherits the fix. The reverse
+          path doesn't work, no matter how hard you DAX at it.
+        </li>
+        <li>
+          <strong>Self-service beats ticketing.</strong>
+          If the owner can answer their own question, the program scales.
+          If they can't, you've just hired a queue.
+        </li>
+      </ul>
+    </div>
+
+    <!-- ============= BACKGROUND ============= -->
+    <div class="sect">
+      <div class="sect-h">
+        <span class="h-tag">Background</span>
+        <h2>The <em>résumé</em> view.</h2>
+        <span class="h-rule"></span>
+      </div>
+
+      <div class="bg-side">
+        <div class="bg-grid">
+          <div>
+            <div class="bs-h">Certifications</div>
+            <div class="bs-row"><span class="k">PL-300</span><span class="v">Mar 2025</span></div>
+            <div class="bs-row"><span class="k">DP-600</span><span class="v">Jul 2025</span></div>
+            <div class="bs-row"><span class="k cert-pending">CRISC</span><span class="v cert-pending">in prep · 2026</span></div>
+
+            <div class="bs-h" style="margin-top: 18px;">Languages</div>
+            <div class="bs-row"><span class="k">English</span><span class="v">IELTS 8.5 · all ≥ 8</span></div>
+            <div class="bs-row"><span class="k">Vietnamese</span><span class="v">native · NAATI CCL</span></div>
+          </div>
+          <div>
+            <div class="bs-h">Experience</div>
+            <div class="bs-row"><span class="k">VPBank · IT Security</span><span class="v">2022 – present</span></div>
+            <div class="bs-row"><span class="k">VPBank · CIO Office</span><span class="v">2018 – 2022</span></div>
+
+            <div class="bs-h" style="margin-top: 18px;">Education</div>
+            <div class="bs-row"><span class="k">B.A. Intl. Politics &amp; Diplomacy</span><span class="v">DAV · 2013–17</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thin tab switch -->
+    <div class="tab-link-wrap">
+      <button class="tab-link" data-tab="recruiter">← Back to The Deliverables</button>
+    </div>
+
+  </div>
+  <!-- end #manager -->
+
+  <!-- ============== FOOTER (contact only) ============== -->
+  <div class="footer">
+    <div class="stamp"><strong>Le Quy Sang</strong> · Hanoi, Vietnam · open to relocate</div>
+    <div class="contact">
+      <a href="mailto:quysang219@gmail.com">quysang219@gmail.com</a>
+      &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/quy-sang-le-30bb21117">linkedin / quy-sang-le</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('click', function(e) {
+    var t = e.target.closest('[data-tab]');
+    if (!t) return;
+    var target = t.getAttribute('data-tab');
+    if (!target) return;
+    document.querySelectorAll('.tab').forEach(function(x) {
+      x.classList.toggle('active', x.getAttribute('data-tab') === target);
+    });
+    document.querySelectorAll('.tab-panel').forEach(function(x) {
+      x.classList.toggle('active', x.id === target);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Story timeline — stage switching
+  document.addEventListener('click', function(e) {
+    var s = e.target.closest('[data-stage]');
+    if (!s) return;
+    var stage = s.getAttribute('data-stage');
+    document.querySelectorAll('.tl-node').forEach(function(n) {
+      n.classList.toggle('active', n.getAttribute('data-stage') === stage);
+    });
+    document.querySelectorAll('.tl-panel').forEach(function(p) {
+      p.classList.toggle('hidden', p.id !== 'tl-stage-' + stage);
+    });
+  });
+</script>
+
+</body>
+</html>
