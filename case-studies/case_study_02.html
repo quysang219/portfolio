@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study 02 — SEC MGMT Self-Service Security Platform · Lê Quý Sang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,400;9..144,1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #131722;
+    --ink-soft: #3c4356;
+    --ink-muted: #7a8194;
+    --ink-faint: #b2b7c4;
+    --paper: #f3f4f7;
+    --paper-card: #fbfbfd;
+    --rule: #d3d6df;
+    --rule-soft: #e1e3ea;
+
+    --accent: #2f4b7c;
+    --accent-soft: #c8d2e2;
+    --accent-bg: #e3e9f2;
+    --accent-deep: #16243d;
+
+    --teal: #1d6a5b;
+    --teal-soft: #b8d4cc;
+    --teal-bg: #dde9e4;
+    --teal-deep: #0a3d35;
+
+    --bronze: #8a6a2e;
+    --bronze-soft: #d9c89a;
+    --bronze-bg: #ede4cf;
+    --bronze-deep: #4a3a18;
+
+    --warn: #c63b54;
+    --warn-soft: #f3d4dc;
+    --warn-bg: #f7e1e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.55;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse at top right, rgba(47, 75, 124, 0.05) 0%, transparent 55%),
+      radial-gradient(ellipse at bottom left, rgba(29, 106, 91, 0.04) 0%, transparent 55%);
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 44px 56px 80px;
+  }
+
+  /* ============== TOP NAV ============== */
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 64px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.005em;
+  }
+  .brand a { color: var(--ink); text-decoration: none; }
+  .brand .role {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--ink); }
+  .back-link .arrow { transition: transform 0.2s; display: inline-block; }
+  .back-link:hover .arrow { transform: translateX(-4px); }
+
+  /* ============== SECTION SCAFFOLD ============== */
+  section.narr, footer.narr {
+    position: relative;
+    margin-bottom: 56px;
+    padding: 64px 52px 68px;
+    border-radius: 10px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 1px 2px rgba(20, 30, 50, 0.025),
+      0 8px 32px rgba(20, 30, 50, 0.04);
+    background: linear-gradient(180deg, rgba(251, 251, 253, 0.72) 0%, rgba(251, 251, 253, 0.30) 30%, transparent 72%);
+    overflow: hidden;
+  }
+
+  section.narr.s-hero {
+    background:
+      radial-gradient(circle at 92% 12%, rgba(29, 106, 91, 0.08) 0%, transparent 28%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.72) 0%, rgba(251, 251, 253, 0.30) 30%, transparent 72%),
+      linear-gradient(135deg, rgba(29, 106, 91, 0.038) 0%, rgba(251, 251, 253, 0.6) 100%);
+  }
+  section.narr.s-started {
+    background:
+      radial-gradient(circle at 8% 88%, rgba(198, 59, 84, 0.07) 0%, transparent 24%),
+      radial-gradient(circle at 90% 18%, rgba(198, 59, 84, 0.045) 0%, transparent 22%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.62) 0%, rgba(251, 251, 253, 0.20) 35%, transparent 78%),
+      linear-gradient(135deg, rgba(198, 59, 84, 0.035) 0%, rgba(47, 75, 124, 0.025) 100%);
+  }
+  section.narr.s-evolved {
+    background:
+      radial-gradient(circle at 95% 85%, rgba(29, 106, 91, 0.06) 0%, transparent 26%),
+      radial-gradient(circle at 6% 15%, rgba(47, 75, 124, 0.05) 0%, transparent 22%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.66) 0%, transparent 78%),
+      linear-gradient(135deg, rgba(29, 106, 91, 0.030) 0%, rgba(47, 75, 124, 0.038) 100%);
+  }
+  section.narr.s-matured {
+    background:
+      radial-gradient(circle at 92% 16%, rgba(138, 106, 46, 0.075) 0%, transparent 26%),
+      radial-gradient(circle at 6% 86%, rgba(138, 106, 46, 0.04) 0%, transparent 22%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.66) 0%, transparent 78%),
+      linear-gradient(135deg, rgba(138, 106, 46, 0.035) 0%, rgba(47, 75, 124, 0.022) 100%);
+  }
+  section.narr.s-now {
+    background:
+      radial-gradient(circle at 90% 12%, rgba(29, 106, 91, 0.07) 0%, transparent 26%),
+      radial-gradient(circle at 8% 88%, rgba(29, 106, 91, 0.045) 0%, transparent 22%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.66) 0%, transparent 78%),
+      linear-gradient(135deg, rgba(29, 106, 91, 0.035) 0%, rgba(47, 75, 124, 0.025) 100%);
+  }
+  footer.narr.s-foot {
+    background:
+      radial-gradient(circle at 80% 18%, rgba(47, 75, 124, 0.06) 0%, transparent 26%),
+      linear-gradient(180deg, rgba(251, 251, 253, 0.70) 0%, transparent 78%),
+      linear-gradient(135deg, rgba(47, 75, 124, 0.035) 0%, rgba(29, 106, 91, 0.020) 100%);
+  }
+
+  .bg-deco { position: absolute; pointer-events: none; opacity: 0.32; z-index: 0; }
+  .bg-deco svg { display: block; }
+  .narr > *:not(.bg-deco) { position: relative; z-index: 1; }
+
+  /* ============== SECTION HEADER ============== */
+  .case-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--teal);
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+
+  .num {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .num-digit {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.012em;
+  }
+  .num-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink);
+  }
+  .num-rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--rule), transparent);
+    max-width: 280px;
+    margin-left: 4px;
+    align-self: center;
+    transform: translateY(2px);
+  }
+  .s-started .num-digit { color: var(--warn); }
+  .s-evolved .num-digit { color: var(--accent); }
+  .s-matured .num-digit { color: var(--bronze); }
+  .s-now     .num-digit { color: var(--teal); }
+  .s-foot    .num-digit { color: var(--accent); }
+
+  .narr h1, .narr h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    line-height: 1.12;
+  }
+  .narr h1 { font-size: 52px; margin-bottom: 28px; max-width: 820px; }
+  .narr h2 { font-size: 36px; margin-bottom: 24px; max-width: 760px; }
+  .narr h1 em, .narr h2 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .s-hero    h1 em { color: var(--teal); }
+  .s-started h2 em { color: var(--warn); }
+  .s-evolved h2 em { color: var(--accent); }
+  .s-matured h2 em { color: var(--bronze); }
+  .s-now     h2 em { color: var(--teal); }
+
+  .narr p.lede {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 720px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .narr p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin-bottom: 18px;
+  }
+  .narr p:last-child { margin-bottom: 0; }
+
+  /* ============== INLINE TOKENS ============== */
+  .token {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    font-weight: 500;
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    padding: 1px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.02em;
+  }
+  .token.token-warn   { background: var(--warn-bg);   color: var(--warn); }
+  .token.token-bronze { background: var(--bronze-bg); color: var(--bronze-deep); }
+  .token.token-teal   { background: var(--teal-bg);   color: var(--teal-deep); }
+
+  /* ============== PULL QUOTE ============== */
+  .pullquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.4;
+    border-left: 2px solid var(--accent);
+    padding: 6px 0 6px 22px;
+    margin: 32px 0 0;
+    max-width: 720px;
+    letter-spacing: -0.006em;
+  }
+  .s-started .pullquote { border-left-color: var(--warn); }
+  .s-evolved .pullquote { border-left-color: var(--accent); }
+  .s-matured .pullquote { border-left-color: var(--bronze); }
+  .s-now     .pullquote { border-left-color: var(--teal); }
+
+  /* ============== MONO PILL ROW ============== */
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+  }
+  .pill {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid var(--accent-soft);
+    background: var(--accent-bg);
+    color: var(--accent-deep);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .pill.pill-teal { border-color: var(--teal-soft); background: var(--teal-bg); color: var(--teal-deep); }
+  .pill-arrow {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-muted);
+    padding: 0 4px;
+  }
+
+  /* ============== HERO MINITAGS ============== */
+  .minitags {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+  .minitags .mt-sep { color: var(--ink-faint); font-weight: 400; user-select: none; }
+
+  /* ============== ROLE / VIGNETTE / PILLAR CARDS ============== */
+  .role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0 4px;
+    max-width: 980px;
+  }
+  .role-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--accent);
+    border-radius: 4px;
+    padding: 20px 22px 22px;
+    transition: box-shadow 0.18s, transform 0.18s;
+  }
+  .role-card:hover {
+    box-shadow: 0 4px 18px rgba(20, 30, 50, 0.07);
+    transform: translateY(-1px);
+  }
+  .role-card .role-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .role-card .role-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.008em;
+    line-height: 1.2;
+  }
+  .role-card .role-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .s-started .role-card { border-left-color: var(--warn); }
+  .s-started .role-card .role-tag { color: var(--warn); }
+  .s-now     .role-card { border-left-color: var(--teal); }
+  .s-now     .role-card .role-tag { color: var(--teal); }
+
+  /* ============== MOTIONS LIST (panel 03) ============== */
+  .motion-list {
+    margin: 24px 0 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 760px;
+  }
+  .motion-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 14px 0 16px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .motion-item:first-child { border-top: none; padding-top: 0; }
+  .motion-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--bronze-deep);
+    letter-spacing: -0.005em;
+    min-width: 150px;
+  }
+  .motion-desc {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ============== CENTERPIECE ============== */
+  .centerpiece-wrap {
+    margin: 8px 0 56px;
+    position: relative;
+  }
+  .centerpiece-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--teal);
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .centerpiece {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(20, 30, 50, 0.04),
+      0 12px 38px rgba(20, 30, 50, 0.10);
+  }
+  .centerpiece img { width: 100%; display: block; }
+  .centerpiece-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.6;
+    margin-top: 16px;
+  }
+  .centerpiece-caption .cap-em { color: var(--teal); font-weight: 500; }
+
+  /* ============== FOOTER PANEL ============== */
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+    margin-top: 8px;
+  }
+  .foot-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .foot-card .fc-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+  }
+  .foot-card .fc-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+  }
+  .foot-card .fc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 3px;
+    width: fit-content;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .foot-card .fc-link .arrow { display: inline-block; transition: transform 0.2s; margin-left: 4px; }
+  .foot-card .fc-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .foot-card .fc-link:hover .arrow { transform: translateX(4px); }
+  .foot-card.back .fc-link:hover .arrow { transform: translateX(-4px); }
+
+  .colophon {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .colophon .stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-faint);
+  }
+  .colophon .motto {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: -0.005em;
+  }
+  .colophon .motto em { font-style: italic; color: var(--accent); }
+
+  /* ============== PANEL CORNER TICKS ============== */
+  section.narr::before,
+  section.narr::after,
+  footer.narr::before,
+  footer.narr::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--ink-faint);
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 2;
+  }
+  section.narr::before, footer.narr::before {
+    top: 16px; left: 16px;
+    border-right: none; border-bottom: none;
+  }
+  section.narr::after, footer.narr::after {
+    bottom: 16px; right: 16px;
+    border-left: none; border-top: none;
+  }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .role-grid { grid-template-columns: 1fr; }
+    .motion-item { grid-template-columns: 1fr; gap: 8px; }
+    .motion-name { min-width: 0; }
+    .foot-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 820px) {
+    .page { padding: 28px 24px 60px; }
+    section.narr, footer.narr { padding: 40px 24px 44px; margin-bottom: 32px; }
+    .narr h1 { font-size: 34px; }
+    .narr h2 { font-size: 26px; }
+    .num-digit { font-size: 32px; }
+    .num-label { font-size: 12px; letter-spacing: 0.18em; }
+    .pullquote { font-size: 19px; padding-left: 16px; }
+    .colophon { flex-direction: column; align-items: flex-start; gap: 10px; }
+    section.narr::before, section.narr::after,
+    footer.narr::before, footer.narr::after { width: 10px; height: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============== TOP NAV ============== -->
+  <nav class="topnav">
+    <div class="brand">
+      <a href="../index.html">Lê Quý Sang</a>
+      <span class="role">Security Engineering · Automation</span>
+    </div>
+    <a href="../index.html#cases" class="back-link">
+      <span class="arrow">←</span> Back to portfolio
+    </a>
+  </nav>
+
+  <!-- ============== HERO ============== -->
+  <section class="narr s-hero">
+    <div class="bg-deco" style="top: 28px; right: 36px;" aria-hidden="true">
+      <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+        <rect x="22" y="22" width="136" height="136" rx="3" stroke="#1d6a5b" stroke-width="0.7" opacity="0.4"/>
+        <line x1="22" y1="58"  x2="158" y2="58"  stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <line x1="22" y1="94"  x2="158" y2="94"  stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <line x1="22" y1="130" x2="158" y2="130" stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="44" cy="40"  r="3" fill="#1d6a5b" opacity="0.5"/>
+        <circle cx="44" cy="76"  r="3" fill="#1d6a5b" opacity="0.5"/>
+        <circle cx="44" cy="112" r="3" fill="#1d6a5b" opacity="0.5"/>
+        <line x1="62" y1="40"  x2="138" y2="40"  stroke="#1d6a5b" stroke-width="0.6" opacity="0.45"/>
+        <line x1="62" y1="76"  x2="120" y2="76"  stroke="#1d6a5b" stroke-width="0.6" opacity="0.45"/>
+        <line x1="62" y1="112" x2="132" y2="112" stroke="#1d6a5b" stroke-width="0.6" opacity="0.45"/>
+      </svg>
+    </div>
+    <span class="case-tagline">Case study · 02 · Operator surface</span>
+    <h1>SEC MGMT — <em>Self-Service</em> Security Platform.</h1>
+    <p class="lede">
+      Case 01 fixed the <em style="color: var(--teal); font-style: italic;">read</em>.
+      This one fixes the <em style="color: var(--teal); font-style: italic;">write</em> —
+      an in-house web app that lets ~200 system owners and administrators
+      record comments, plans, exceptions and approvals next to the very
+      findings they're looking at, instead of in their inbox.
+    </p>
+    <div class="minitags" aria-label="Tech and craft tags">
+      <span class="mt">JavaScript</span>
+      <span class="mt-sep">·</span>
+      <span class="mt">PostgreSQL</span>
+      <span class="mt-sep">·</span>
+      <span class="mt">Workflow</span>
+      <span class="mt-sep">·</span>
+      <span class="mt">RBAC</span>
+    </div>
+  </section>
+
+  <!-- ============== 01 HOW IT STARTED ============== -->
+  <section class="narr s-started">
+    <div class="bg-deco" style="bottom: 32px; right: 44px;" aria-hidden="true">
+      <svg width="220" height="160" viewBox="0 0 220 160" fill="none">
+        <rect x="20" y="30" width="60" height="22" rx="3" stroke="#c63b54" stroke-width="0.7" opacity="0.55"/>
+        <line x1="28" y1="42" x2="72" y2="42" stroke="#c63b54" stroke-width="0.5" opacity="0.35" stroke-dasharray="2 3"/>
+        <rect x="90" y="60" width="60" height="22" rx="3" stroke="#c63b54" stroke-width="0.7" opacity="0.5"/>
+        <line x1="98" y1="72" x2="142" y2="72" stroke="#c63b54" stroke-width="0.5" opacity="0.3" stroke-dasharray="2 3"/>
+        <rect x="40" y="92" width="60" height="22" rx="3" stroke="#c63b54" stroke-width="0.7" opacity="0.5"/>
+        <line x1="48" y1="104" x2="92" y2="104" stroke="#c63b54" stroke-width="0.5" opacity="0.3" stroke-dasharray="2 3"/>
+        <rect x="120" y="116" width="60" height="22" rx="3" stroke="#c63b54" stroke-width="0.7" opacity="0.45"/>
+        <line x1="128" y1="128" x2="172" y2="128" stroke="#c63b54" stroke-width="0.5" opacity="0.3" stroke-dasharray="2 3"/>
+        <path d="M50 52 Q70 70 90 70" fill="none" stroke="#c63b54" stroke-width="0.5" opacity="0.35"/>
+        <path d="M120 82 Q100 92 70 92" fill="none" stroke="#c63b54" stroke-width="0.5" opacity="0.35"/>
+        <path d="M100 114 Q120 116 150 116" fill="none" stroke="#c63b54" stroke-width="0.5" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="num">
+      <span class="num-digit">01</span>
+      <span class="num-label">How it started</span>
+      <span class="num-rule"></span>
+    </div>
+    <h2>The <em>interaction</em> gap.</h2>
+    <p class="lede">
+      Even after the central report landed, the workflows were still
+      overloading. The bottleneck had moved — from the read side to the
+      interaction around findings.
+    </p>
+    <p>
+      The dashboard told you exactly where the gap was. It didn't tell you
+      what was happening with it. Did anyone attempt to fix this? Are we
+      waiting for a vendor release? A test date? Is an exception in flight?
+      Was an exemption ever approved, by whom, and when?
+    </p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-tag">Vignette · 01</div>
+        <div class="role-name">Vulnerabilities</div>
+        <div class="role-desc">
+          An unremediated, overdue finding sits on the report with no
+          context. <em style="font-style: italic; color: var(--warn);">Vendor release pending? Test date scheduled? Exception in draft?</em>
+          The numbers were honest. The story was missing.
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Vignette · 02</div>
+        <div class="role-name">Firewall Review</div>
+        <div class="role-desc">
+          After findings and recommendations were sent to system owners,
+          they needed somewhere to log justifications —
+          <em style="font-style: italic; color: var(--warn);">why this unsafe port is still open, what this rule actually serves.</em>
+          Email threads don't survive a quarter.
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Vignette · 03</div>
+        <div class="role-name">User Account Review</div>
+        <div class="role-desc">
+          Sometimes an account needs to be kept — it's actually a
+          <span class="token token-warn">service account</span>, not a
+          person. There was no in-platform way to record that decision so
+          the next review wouldn't re-flag it.
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 30px;">
+      Security experts handled all of this on their own agility. Each
+      workflow had a different format of collaboration — emails, Teams
+      chats, Excel sheets. The interaction layer was running on muscle
+      memory.
+    </p>
+
+    <div class="pullquote">
+      A finding without context is just a number.
+    </div>
+  </section>
+
+  <!-- ============== 02 HOW IT EVOLVED ============== -->
+  <section class="narr s-evolved">
+    <div class="bg-deco" style="top: 56px; right: 52px;" aria-hidden="true">
+      <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+        <rect x="20" y="40" width="160" height="100" rx="4" stroke="#2f4b7c" stroke-width="0.8" opacity="0.5"/>
+        <rect x="20" y="40" width="160" height="14" fill="#2f4b7c" opacity="0.06"/>
+        <line x1="36" y1="74" x2="164" y2="74" stroke="#2f4b7c" stroke-width="0.5" opacity="0.35"/>
+        <line x1="36" y1="90" x2="164" y2="90" stroke="#2f4b7c" stroke-width="0.5" opacity="0.3"/>
+        <line x1="36" y1="106" x2="120" y2="106" stroke="#2f4b7c" stroke-width="0.5" opacity="0.25"/>
+        <line x1="36" y1="122" x2="140" y2="122" stroke="#2f4b7c" stroke-width="0.5" opacity="0.2"/>
+        <path d="M150 110 L170 90 M165 90 L170 90 L170 95" stroke="#c63b54" stroke-width="1.2" opacity="0.55" fill="none" stroke-linecap="round"/>
+        <circle cx="160" cy="100" r="14" fill="none" stroke="#c63b54" stroke-width="1" opacity="0.45" stroke-dasharray="2 3"/>
+      </svg>
+    </div>
+    <div class="num">
+      <span class="num-digit">02</span>
+      <span class="num-label">How it evolved</span>
+      <span class="num-rule"></span>
+    </div>
+    <h2>The Power BI <em>ceiling</em>.</h2>
+    <p class="lede">
+      We tried writeback inside Power BI first. Power BI Report Server is a
+      packaged Microsoft product — self-service cell-level writeback isn't
+      part of its surface.
+    </p>
+    <p>
+      Third-party writeback visuals exist on the market. We sized them
+      against our population and the math didn't land.
+    </p>
+    <p>
+      We serve roughly <span class="token">200 users per quarter</span>:
+      system owners and administrators. That's a small population by
+      license count, but a large one by role. Per-seat custom-visual
+      pricing is built for very different distributions — high volumes of
+      casual readers, not a few hundred deeply-engaged decision-makers.
+      The writeback layer had to step outside the BI tool.
+    </p>
+
+    <div class="pill-row">
+      <span class="pill">Power BI Report Server &middot; read</span>
+      <span class="pill-arrow">→</span>
+      <span class="pill pill-teal">Internal web app &middot; write</span>
+    </div>
+
+    <div class="pullquote">
+      Small in count, large in role.
+    </div>
+  </section>
+
+  <!-- ============== 03 HOW IT MATURED ============== -->
+  <section class="narr s-matured">
+    <div class="bg-deco" style="bottom: 36px; right: 48px;" aria-hidden="true">
+      <svg width="220" height="160" viewBox="0 0 220 160" fill="none">
+        <rect x="14" y="26" width="78" height="50" rx="3" stroke="#8a6a2e" stroke-width="0.7" opacity="0.55"/>
+        <line x1="24" y1="42" x2="82" y2="42" stroke="#8a6a2e" stroke-width="0.5" opacity="0.4"/>
+        <line x1="24" y1="56" x2="68" y2="56" stroke="#8a6a2e" stroke-width="0.5" opacity="0.3"/>
+        <rect x="100" y="40" width="78" height="50" rx="3" stroke="#8a6a2e" stroke-width="0.7" opacity="0.5"/>
+        <line x1="110" y1="56" x2="168" y2="56" stroke="#8a6a2e" stroke-width="0.5" opacity="0.4"/>
+        <line x1="110" y1="70" x2="156" y2="70" stroke="#8a6a2e" stroke-width="0.5" opacity="0.3"/>
+        <rect x="56" y="92" width="78" height="50" rx="3" stroke="#8a6a2e" stroke-width="0.7" opacity="0.5"/>
+        <line x1="66" y1="108" x2="124" y2="108" stroke="#8a6a2e" stroke-width="0.5" opacity="0.4"/>
+        <line x1="66" y1="122" x2="110" y2="122" stroke="#8a6a2e" stroke-width="0.5" opacity="0.3"/>
+        <path d="M92 60 Q120 60 138 50" fill="none" stroke="#8a6a2e" stroke-width="0.7" opacity="0.5" stroke-dasharray="2 3"/>
+        <path d="M138 90 Q120 100 110 95" fill="none" stroke="#8a6a2e" stroke-width="0.7" opacity="0.5" stroke-dasharray="2 3"/>
+        <path d="M82 85 Q82 92 92 95" fill="none" stroke="#8a6a2e" stroke-width="0.7" opacity="0.5" stroke-dasharray="2 3"/>
+      </svg>
+    </div>
+    <div class="num">
+      <span class="num-digit">03</span>
+      <span class="num-label">How it matured</span>
+      <span class="num-rule"></span>
+    </div>
+    <h2>Building <em>in-house</em>.</h2>
+    <p class="lede">
+      We developed an in-house web application with simple writeback
+      capabilities, sized for the actual population — a few hundred owners
+      and admins who needed a structured way to talk back to the report.
+    </p>
+    <p>
+      What surprised us was how repeatable the shape was. No matter which
+      security program we onboarded next, the same three motions appeared,
+      once each per finding.
+    </p>
+
+    <div class="motion-list">
+      <div class="motion-item">
+        <div class="motion-name">Write</div>
+        <div class="motion-desc">
+          Owners record comments, plans, queries and exception requests
+          against the actual finding they're looking at — not a copy of it
+          pasted into an email.
+        </div>
+      </div>
+      <div class="motion-item">
+        <div class="motion-name">Review</div>
+        <div class="motion-desc">
+          Security reviews and approves or responds, in-platform, with the
+          finding still in context. The decision and its rationale stay
+          attached to the data.
+        </div>
+      </div>
+      <div class="motion-item">
+        <div class="motion-name">Automate</div>
+        <div class="motion-desc">
+          Routine clarifications and stalled-thread follow-ups don't need a
+          human first-touch. The platform handles them, the team handles
+          the cases that need judgment.
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 28px;">
+      That three-step shape became the canonical workflow template. Onboarding
+      a new program is no longer a one-off design exercise; it's a mapping
+      exercise — fit the program to <span class="token token-bronze">write → review → automate</span>.
+    </p>
+
+    <div class="pullquote">
+      The same three motions, once each per finding.
+    </div>
+  </section>
+
+  <!-- ============== 04 WHAT IT IS NOW ============== -->
+  <section class="narr s-now">
+    <div class="bg-deco" style="top: 36px; right: 44px;" aria-hidden="true">
+      <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
+        <rect x="14" y="20" width="172" height="120" rx="4" stroke="#1d6a5b" stroke-width="0.8" opacity="0.45"/>
+        <rect x="14" y="20" width="172" height="14" fill="#1d6a5b" opacity="0.06"/>
+        <line x1="14" y1="46" x2="186" y2="46" stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <line x1="68" y1="46" x2="68" y2="140" stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <line x1="132" y1="46" x2="132" y2="140" stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="30" cy="62" r="3" fill="#1d6a5b" opacity="0.55"/>
+        <line x1="38" y1="62" x2="60" y2="62" stroke="#1d6a5b" stroke-width="0.5" opacity="0.4"/>
+        <circle cx="30" cy="80" r="3" fill="#1d6a5b" opacity="0.45"/>
+        <line x1="38" y1="80" x2="56" y2="80" stroke="#1d6a5b" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="30" cy="98" r="3" fill="#1d6a5b" opacity="0.35"/>
+        <line x1="38" y1="98" x2="58" y2="98" stroke="#1d6a5b" stroke-width="0.5" opacity="0.25"/>
+        <rect x="80"  y="56" width="40" height="6" rx="2" fill="#1d6a5b" opacity="0.55"/>
+        <rect x="80"  y="72" width="36" height="6" rx="2" fill="#1d6a5b" opacity="0.4"/>
+        <rect x="80"  y="88" width="44" height="6" rx="2" fill="#1d6a5b" opacity="0.3"/>
+        <path d="M148 58 L160 70 L176 54" fill="none" stroke="#1d6a5b" stroke-width="1.4" opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M148 86 L160 98 L176 82" fill="none" stroke="#1d6a5b" stroke-width="1.4" opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="num">
+      <span class="num-digit">04</span>
+      <span class="num-label">What it is now</span>
+      <span class="num-rule"></span>
+    </div>
+    <h2>The SEC MGMT <em>Self-Service</em> Platform.</h2>
+    <p class="lede">
+      The operator surface for everything above — three pillars, one
+      writeback layer, every interaction captured next to the data.
+    </p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-tag">Pillar · 01</div>
+        <div class="role-name">Workflow engineering</div>
+        <div class="role-desc">
+          End-to-end onboarded: system owner comments, security review,
+          approval or response. The dashboard's finding now has a thread on
+          it instead of a missing inbox conversation.
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Pillar · 02</div>
+        <div class="role-name">Workflow automation</div>
+        <div class="role-desc">
+          <span class="token token-teal">SECAI</span> sits behind the
+          platform and replies to system owners — clarifies routine
+          queries, follows up on stalled threads, frees the team for the
+          cases that actually need judgment.
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Pillar · 03</div>
+        <div class="role-name">Finding depth</div>
+        <div class="role-desc">
+          Findings stopped appearing blank. Each carries the story behind
+          it — <em style="font-style: italic; color: var(--teal-deep);">plans, exception requests, queries, notes.</em>
+          The four you'd actually see in production:
+          <span class="token token-teal">vendor release</span>,
+          <span class="token token-teal">test date</span>,
+          <span class="token token-teal">exception requested</span>,
+          <span class="token token-teal">service account</span>.
+        </div>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      The platform doesn't replace judgment — it moves judgment into the
+      platform.
+    </div>
+  </section>
+
+  <!-- ============== CENTERPIECE ============== -->
+  <div class="centerpiece-wrap">
+    <div class="centerpiece-label">Fig. 01 · The platform</div>
+    <figure class="centerpiece">
+      <img src="../img/SEC_MGMT_redacted.png" alt="SEC MGMT Self-Service Security Platform — operator surface (redacted)">
+    </figure>
+    <div class="centerpiece-caption">
+      <span class="cap-em">SEC MGMT Self-Service Security Platform</span> ·
+      operator surface · redacted for public portfolio
+    </div>
+  </div>
+
+  <!-- ============== FOOTER ============== -->
+  <footer class="narr s-foot">
+    <div class="bg-deco" style="top: 28px; right: 36px;" aria-hidden="true">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
+        <circle cx="80" cy="80" r="8"  stroke="#2f4b7c" stroke-width="0.9" opacity="0.55"/>
+        <circle cx="80" cy="80" r="26" stroke="#2f4b7c" stroke-width="0.7" opacity="0.4"  stroke-dasharray="2 4"/>
+        <circle cx="80" cy="80" r="48" stroke="#2f4b7c" stroke-width="0.7" opacity="0.32" stroke-dasharray="2 5"/>
+        <circle cx="80" cy="80" r="72" stroke="#2f4b7c" stroke-width="0.6" opacity="0.22" stroke-dasharray="2 6"/>
+      </svg>
+    </div>
+    <div class="num">
+      <span class="num-digit">05</span>
+      <span class="num-label">Continue</span>
+      <span class="num-rule"></span>
+    </div>
+
+    <div class="foot-grid">
+      <div class="foot-card back">
+        <div>
+          <div class="fc-tag">Return</div>
+          <div class="fc-title">Back to portfolio</div>
+        </div>
+        <a href="../index.html#cases" class="fc-link">
+          <span class="arrow">←</span> All case studies
+        </a>
+      </div>
+      <div class="foot-card">
+        <div>
+          <div class="fc-tag">Case study · 01</div>
+          <div class="fc-title">Executive surface — centralized security reporting.</div>
+        </div>
+        <a href="case_study_01.html" class="fc-link">
+          Read the case study <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="colophon">
+      <span class="stamp">Lê Quý Sang · 2026</span>
+      <span class="motto">System Thinking. <em>Tangible Outcomes.</em></span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
